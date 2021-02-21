@@ -1,0 +1,55 @@
+body {
+  font-family: Verdana, sans-serif;
+}
+
+
+
+#header {
+  text-align: left;
+  grid-column: auto/span 10;
+  grid-row: auto/span 1;
+}
+#list {
+  grid-column: auto/span 2;
+  grid-row: auto/span 10;
+}
+#info {
+  grid-column: auto/span 4;
+  grid-row: auto/span 3;
+}
+#stock {
+  grid-column: auto/span 4;
+  grid-row: auto/span 8;
+}
+#map {
+  grid-column: auto/span 4;
+  grid-row: auto/span 6;
+}
+#placeholder {
+  grid-column: auto/span 4;
+}
+
+.button{
+  background-color: rgb(81, 81, 255);
+  color: white;
+  border: none;
+  text-align: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+
+.grid-container{
+  display:grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+  grid-gap: 5px;
+  padding: 10px;
+}
+
+.grid-container > div {
+  background-color: rgba(192, 174, 174, 0.8);
+  text-align: center;
+  padding: 10px;
+  font-size: 20px;
+}
