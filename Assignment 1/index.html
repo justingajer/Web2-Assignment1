@@ -3,7 +3,8 @@
 <head>
    <meta charset="utf-8"/>  
     <title>Assignment 1</title>  
-    <link rel="stylesheet" href="styles.css">  
+    <link rel="stylesheet" href="styles.css"> 
+    <script src="loadCompanyList.js"></script>
 </head>
 
 
@@ -13,13 +14,19 @@
     <div class="grid-container">
         
       <!--Header-->
-      <div id="header">Header</div>
+      <header id="header">Header</header>
         
         <!--LIST OF COMPANIES-->
-        <div id="list">List of Companies
-
-          <button class="button">Go</button>
-          <button class="button">Clear</button>
+        <div id="list">
+            <p>List of Companies</p>
+            <p>Filter + Textbox</p>
+            
+            <div>
+                <button class="button">Go</button>
+                <button class="button">Clear</button>
+            </div>
+            
+            <ul id="companyList"></ul>
 
         </div>
 
@@ -41,8 +48,6 @@
     
     </div>
     
-
-    </header>
 
     <main>
 

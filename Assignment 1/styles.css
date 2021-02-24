@@ -2,31 +2,29 @@ body {
   font-family: Verdana, sans-serif;
 }
 
-
-
 #header {
   text-align: left;
-  grid-column: auto/span 10;
-  grid-row: auto/span 1;
+  grid-column: span 10;
+  grid-row: span 1;
 }
 #list {
-  grid-column: auto/span 2;
-  grid-row: auto/span 10;
+  grid-column: span 2;
+  grid-row: span 10;
 }
 #info {
-  grid-column: auto/span 4;
-  grid-row: auto/span 3;
+  grid-column: span 4;
+  grid-row: span 3;
 }
 #stock {
-  grid-column: auto/span 4;
-  grid-row: auto/span 8;
+  grid-column: span 4;
+  grid-row: span 8;
 }
 #map {
-  grid-column: auto/span 4;
-  grid-row: auto/span 6;
+  grid-column: span 4;
+  grid-row: span 6;
 }
 #placeholder {
-  grid-column: auto/span 4;
+  grid-column: span 4;
 }
 
 .button{
@@ -52,4 +50,8 @@ body {
   text-align: center;
   padding: 10px;
   font-size: 20px;
+}
+
+#companyList{
+    overflow-y: scroll;
 }

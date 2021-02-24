@@ -1,0 +1,39 @@
+document.addEventListener("DOMContentLoaded", function () {
+    
+    let companyURL = 'https://www.randyconnolly.com/funwebdev/3rd/api/stocks/companies.php';
+    
+    const listContainer = document.querySelector('#companyList');
+    
+    let companyList = retrieveStorage();
+    
+    fill(companyList);
+    
+    /* FUNCTIONS FOR STORAGE FROM LAB4 EX11*/
+    
+    //update storage with company list
+    function updateStorage() {
+        localStorage.setItem('companies', JSON.stringify(companyList));
+    }
+    
+    //Parses local storage or fetches company data from API
+    function retrieveStorage() {
+        return JSON.parse(localStorage.getItem('companies')) || 
+               fetch(companyURL).then( (resp) => resp.json() )
+                                .then( data => localStorage.setItem('companies', JSON.stringify(data)))
+                                .catch( error => console.error(error));
+    }
+    
+    //removes collection from storage
+    function removeStorage() {
+        localStorage.removeItem('companies');
+    }
+    
+    
+    function fill(companies) {
+        for(let company of companies) {
+            let listElement = document.createElement('li');
+            listElement.textContent = company.name
+            listContainer.appendChild(listElement);
+        }
+    }
+});
