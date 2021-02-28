@@ -36,4 +36,11 @@ document.addEventListener("DOMContentLoaded", function () {
             listContainer.appendChild(listElement);
         }
     }
+    
+    //Map API
+    function initMap(){
+        const map = new google.maps.Map(document.getElementById("map"), {
+        center: {lat: 41.89474, lng: 12.4839}
+        });
+    }
 });
