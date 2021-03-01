@@ -38,9 +38,22 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     
     //Map API
-    function initMap(){
-        const map = new google.maps.Map(document.getElementById("map"), {
-        center: {lat: 41.89474, lng: 12.4839}
-        });
-    }
+    // Initialize and add the map
+    function initMap() {
+    
+    const location = { lat: 41.89474, lng: 12.4839 }
+  
+    const map = new google.maps.Map(document.getElementById("map"), {
+      center: location,
+    });
+    
+    // Add marker on location
+    const marker = new google.maps.Marker({
+      position: location,
+      map: map,
+      
+    });
+    // cant figure out how to add the map into the div
+    document.getElementById('map').appendChild(map);
+  }
 });
