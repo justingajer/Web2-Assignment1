@@ -37,6 +37,16 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
     
+    // speak button 
+    document.querySelector('#speak').
+        addEventListener('click', (e) => {
+            e.preventDefault();
+            let message = document.querySelector('textarea').value;         
+            let utterance = new SpeechSynthesisUtterance(message); 
+            window.speechSynthesis.speak(utterance);
+        });
+
+    
     //Map API
     // Initialize and add the map
     function initMap() {
