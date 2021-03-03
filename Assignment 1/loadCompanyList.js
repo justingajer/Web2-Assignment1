@@ -46,6 +46,14 @@ document.addEventListener("DOMContentLoaded", function () {
             window.speechSynthesis.speak(utterance);
         });
 
+    //credits in header (supposed to show our names and stuff and then fade away after 4 seconds
+    document.querySelector('#logo').
+    addEventListener('mouseover', (e) => {
+    document.getElementById("tooltiptext").innerHTML = 'Jacob Gill, Justin Gajer. COMP 3512, Google Maps';
+    setTimeout(function(){
+    document.getElementById("tooltiptext").innerHTML = '';
+}, 3000);
+});
     
     //Map API
     // Initialize and add the map
