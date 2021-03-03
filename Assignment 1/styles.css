@@ -25,7 +25,7 @@ body {
   grid-column: span 4;
   grid-row: span 6;
 }
-#placeholder {
+#calculations {
   grid-column: span 4;
 }
 
@@ -65,4 +65,42 @@ body {
 
 #companyList>li:hover {
     cursor: pointer;
+}
+
+}
+
+.tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: rgb(0, 0, 0);
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+ 
+ 
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+#stockData {
+    height: 700px;
+    overflow-y: scroll;
+}
+
+#stockTable {
+    width: 100%;
+}
+
+#tableHeader {
+    cursor: pointer;
+}
+
+#calculations table { 
+    width: 100%;
 }
