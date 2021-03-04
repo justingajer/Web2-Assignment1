@@ -63,7 +63,11 @@ document.addEventListener("DOMContentLoaded", function () {
         elementArray.push(createTextElement(company.subindustry));
         elementArray.push(createTextElement(company.address));
         elementArray.push(createTextElement(company.exchange));
-        elementArray.push(createTextElement(company.description));
+        //parse the description to append the ID speak so it can be spoken
+        let speakElement = createTextElement(company.description);
+        speakElement.setAttribute('id', 'speak');
+        elementArray.push(speakElement);
+
         
         const websiteElement = document.createElement('a');
         websiteElement.textContent = company.website
@@ -109,13 +113,12 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
     // speak button 
-    document.querySelector('#speak').
-        addEventListener('click', (e) => {
+    document.querySelector('#speak').addEventListener('click', (e) => {
             e.preventDefault();
-            let message = document.querySelector('textarea').value;         
+            let message = document.querySelector('#speak').value;         
             let utterance = new SpeechSynthesisUtterance(message); 
             window.speechSynthesis.speak(utterance);
-        });
+    });
 
     //credits in header (supposed to show our names and stuff and then fade away after 4 seconds
     document.querySelector('#logo').
