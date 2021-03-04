@@ -1,3 +1,4 @@
+//test
 document.addEventListener("DOMContentLoaded", function () {
     let companyURL = 'https://www.randyconnolly.com/funwebdev/3rd/api/stocks/companies.php';
     let stockURL = 'https://www.randyconnolly.com/funwebdev/3rd/api/stocks/history.php?symbol='
