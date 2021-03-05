@@ -12,7 +12,6 @@ document.addEventListener("DOMContentLoaded", function () {
     fill(companyList);
     
     
-    
     /* ------------- FUNCTIONS FOR STORAGE FROM LAB4 EX11 ----------------- */
     
     //update storage with company list
@@ -63,10 +62,8 @@ document.addEventListener("DOMContentLoaded", function () {
         elementArray.push(createTextElement(company.subindustry));
         elementArray.push(createTextElement(company.address));
         elementArray.push(createTextElement(company.exchange));
-        //parse the description to append the ID speak so it can be spoken
-        let speakElement = createTextElement(company.description);
-        speakElement.setAttribute('id', 'speak');
-        elementArray.push(speakElement);
+        elementArray.push(createTextElement(company.description));
+        
 
         
         const websiteElement = document.createElement('a');
@@ -79,6 +76,70 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
     
+    //This fills out the company info for the chart view
+    function chartInformationFill(company) {
+        const secondInfoList = document.querySelector("#chartInfo>div");
+        secondInfoList.innerHTML = '';
+        const infoArray = [];
+        
+        //parse the description to append the ID speak so it can be spoken
+        let speakElement = createTextElement(company.description);
+        speakElement.setAttribute('id', 'toSpeak');
+        
+        //Assigning a value so we can use it later
+        let nameElement = createTextElement(company.name);
+        nameElement.setAttribute('id', 'companyName');
+        
+        infoArray.push(nameElement);
+        infoArray.push(createTextElement(company.symbol));
+        infoArray.push(speakElement);
+        
+        for(let element of infoArray) {
+            secondInfoList.appendChild(element);
+        }
+        
+    }
+    
+    //Fills out finance table of chart view
+    function financeFill(company) {
+        const financeTable = document.querySelector("#financeTable");
+        financeTable.innerHTML = `<tr>
+                                    <th>Year</th>
+                                    <th>2017</th>
+                                    <th>2018</th>
+                                    <th>2019</th>
+                                  </tr>
+                                  <tr class="financeRows"><td>Assets</td></tr>
+                                  <tr class="financeRows"><td>Earnings</td></tr>
+                                  <tr class="financeRows"><td>Liabilities</td></tr>
+                                  <tr class="financeRows"><td>Revenue</td></tr>`
+        
+        
+        const rows = document.querySelectorAll(".financeRows");
+        const financeArray = [];
+        
+        console.log(company);
+        
+        //Saving all the financial data
+        financeArray.push(company.financials.assets);
+        financeArray.push(company.financials.earnings);
+        financeArray.push(company.financials.liabilities);
+        financeArray.push(company.financials.revenue);
+        
+        //Use two loops, one runs through the rows in the table, the other goes backwards through the financials (finances are stored newest first so this is faster than reversing all the arrays)
+        for ( let i = 0; i < rows.length; i++ ) {
+            
+            for ( let j = financeArray[i].length-1; j > -1; j--) {
+                
+                const cell = document.createElement('td');
+                cell.textContent = financeArray[i][j];
+                rows[i].appendChild(cell);
+                
+            }
+        }
+        
+    }
+    
     //Click event for the company list, it will find the company then fill the info box accordingly.
     document.querySelector("#companyList").addEventListener('click', function (e) { 
         if (e.target.nodeName == "LI") {
@@ -87,11 +148,11 @@ document.addEventListener("DOMContentLoaded", function () {
             //Fetch the stock data for future use
             fetch(stockURL + foundCompany.symbol).then( (resp) => resp.json() )
                                 .then( data => {
-                                                fillStockData(data);
-                                                stockCalc(data);
                                                 //Storing the stock data for future sorting purposes
                                                 stockData = [];
                                                 stockData.push(... data);
+                                                fillStockData(data);
+                                                stockCalc(data);
                                                 })
                                 .catch( error => console.error(error));
             
@@ -104,15 +165,23 @@ document.addEventListener("DOMContentLoaded", function () {
             logo.setAttribute('src', './logos/' + foundCompany.symbol + '.svg');
             infoBox.appendChild(logo);
             
-            //Call function to fill in the company information
+            //Call functions to fill in the company information sections
             informationFill(foundCompany);
+            chartInformationFill(foundCompany);
             
             //Call function to initialize the map with company data
             initMap(foundCompany);
             
+            //Call function to fill finance data
+            if (foundCompany.finances)
+                financeFill(foundCompany);
+            
         }
     });
-    // speak button 
+    
+    
+    /*------------ MISC SCRIPTS (SPEAK BUTTON/MOUSEOVER EVENT)----------------*/
+    // Speak button 
     document.querySelector('#speak').addEventListener('click', (e) => {
             e.preventDefault();
             let message = document.querySelector('#speak').value;         
@@ -129,7 +198,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 3000);
     });
     
-    //Map API
+    /*--------------- MAP API FUNCTION ----------------------------*/
     // Initialize and add the map
     function initMap(company) {
         let location = {lat: company.latitude, lng: company.longitude };
@@ -334,6 +403,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const minArr = [];
         const maxArr = [];
         const minMaxArr = [];
+
         
         // ---------- OPEN --------
         data.sort((a, b) => (parseFloat(a.open) > parseFloat(b.open)) ? 1 : -1 );
@@ -374,10 +444,242 @@ document.addEventListener("DOMContentLoaded", function () {
         minMaxArr.push(minArr);
         minMaxArr.push(maxArr);
         
-        console.log(minMaxArr);
-        
         return minMaxArr;
         
+    }
+
+
+    /*----------- VIEW CHARTS AND WHATNOT ------------*/
+    //Function that selects both containers individually and their elements and hides / unhides them.
+    document.querySelectorAll('.viewButton').forEach(item => {
+            item.addEventListener('click', (e) => {
+                
+                const firstContainer = document.querySelectorAll(".grid-container > div");
+                const secondContainer = document.querySelectorAll(".grid-container-two > div");
+
+                document.querySelector(".grid-container").classList.toggle("hide");
+                document.querySelector(".grid-container-two").classList.toggle("hide");
+
+                for (let anElement of firstContainer) {
+                    anElement.classList.toggle('hide');
+                }
+
+                for (let secElement of secondContainer) {
+                    secElement.classList.toggle('hide');
+                }
+                
+                //If closing the view, remove current charts.
+                if ( e.target.innerText.toLowerCase() == 'close') {
+                    const charts = document.querySelector('#charts');
+                    charts.innerHTML = `CHARTS
+            
+                                        <div class='chart' id="barChart" style="width:800px; height:400px;"></div>
+                                        <div class='chart' id="candleChart" style="width:600px; height:400px;"></div>
+                                        <div class='chart' id="lineChart" style="width:600px; height:400px;"></div>`
+                    
+                }
+                else {
+                    //Check to see if they picked a company, if they do send it off to be made into charts
+                    if (document.querySelector('#companyName')) {
+                        let companyToChart = companyList.find(company => document.querySelector('#companyName').textContent == company.name);
+                        initCharts(companyToChart);
+                    }
+                }
+                
+        })
+    });
+
+    
+
+    /*--------- CHART STUFF ----------*/
+    // Takes in a company and preps charts to be made
+    function initCharts(company) {
+        if (company.financials)
+            initBarChart(company.financials);
+        
+        initCandleChart();
+    }
+    
+    //Bar chart creation, takes in a finance object and creates based on that
+    function initBarChart(finances) {
+        let myChart = echarts.init(document.querySelector('#barChart'));
+
+        let labelOption = {
+            show: true,
+            position: 'insideBottom',
+            distance: 15,
+            align: 'left',
+            verticalAlign: 'middle',
+            rotate: 90,
+            formatter: '{c}  {name|{a}}',
+            fontSize: 16,
+            rich: {
+                name: {
+                }
+            }
+        };
+
+        let option = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            legend: {
+                data: ['Assets', 'Earnings', 'Liabilities', 'Revenue']
+            },
+            
+            xAxis: [
+                {
+                    type: 'category',
+                    axisTick: {show: false},
+                    data: ['2017', '2018', '2019']
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value'
+                }
+            ],
+            series: [
+                {
+                    name: 'Assets',
+                    type: 'bar',
+                    barGap: 0,
+                    label: labelOption,
+                    emphasis: {
+                        focus: 'series'
+                    },
+                    data: [finances.assets[0], finances.assets[1], finances.assets[2]]
+                },
+                {
+                    name: 'Earnings',
+                    type: 'bar',
+                    label: labelOption,
+                    emphasis: {
+                        focus: 'series'
+                    },
+                    data: [finances.earnings[0], finances.earnings[1], finances.earnings[2]]
+                },
+                {
+                    name: 'Liabilities',
+                    type: 'bar',
+                    label: labelOption,
+                    emphasis: {
+                        focus: 'series'
+                    },
+                    data: [finances.liabilities[0], finances.liabilities[1], finances.liabilities[2]]
+                },
+                {
+                    name: 'Revenue',
+                    type: 'bar',
+                    label: labelOption,
+                    emphasis: {
+                        focus: 'series'
+                    },
+                    data: [finances.revenue[0], finances.revenue[1], finances.revenue[2]]
+                }
+            ]
+        };
+
+        myChart.setOption(option);
+        
+    }
+    
+    
+    //Creates the candlestick chart
+    function initCandleChart() {
+        let myChart = echarts.init(document.querySelector('#candleChart'));
+        
+        let option = {
+            xAxis: {
+                data: ['Open', 'Close', 'High', 'Low']
+            },
+            yAxis: {},
+            series: [{
+                type: 'k',
+                data: [
+                    [20, 34, 10,38],
+                    [40, 35, 30, 50],
+                    [31, 38, 33, 44],
+                    [38, 15, 5, 42]
+                ]
+            }]
+    
+        };
+        
+        myChart.setOption(option);
+    }
+    
+    function initLineChart() {
+        let myChart = echarts.init(document.querySelector('#lineChart'));
+        
+        let option = {
+            title: {
+                text: '折线图堆叠'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: ['邮件营销', '联盟广告', '视频广告', '直接访问', '搜索引擎']
+            },
+            grid: {    
+                left: '3%',     
+                right: '4%',  
+                bottom: '3%', 
+                containLabel: true
+            },
+            toolbox: { 
+                feature: {     
+                    saveAsImage: {}
+                }
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [
+                {
+                    name: '邮件营销',
+                    type: 'line',
+                    stack: '总量',
+                    data: [120, 132, 101, 134, 90, 230, 210]
+                },
+                {
+                    name: '联盟广告',
+                    type: 'line',
+                    stack: '总量',
+                    data: [220, 182, 191, 234, 290, 330, 310]
+                },
+                {
+                    name: '视频广告',
+                    type: 'line',
+                    stack: '总量',
+                    data: [150, 232, 201, 154, 190, 330, 410]
+                },
+                {
+                    name: '直接访问',
+                    type: 'line',
+                    stack: '总量',
+                    data: [320, 332, 301, 334, 390, 330, 320]
+                },
+                {
+                    name: '搜索引擎',
+                    type: 'line',
+                    stack: '总量',
+                    data: [820, 932, 901, 934, 1290, 1330, 1320]
+                }
+            ]
+    
+        };
+        
+        myChart.setOption(option);
     }
 });
 

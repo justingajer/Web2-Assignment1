@@ -5,23 +5,23 @@
    <meta charset="utf-8"/>  
     <title>Assignment 1</title>  
     <link rel="stylesheet" href="styles.css"> 
-    <script src="loadCompanyList.js"></script>    
+    <script src="loadCompanyList.js"></script>
+    <script src="echarts-master/dist/echarts.min.js"></script>    
 </head>
 
 
 
 <body>
-  
-    <div class="grid-container">
-        
-      <!--Header-->
-      <header id="header">
-          <button id='logo'>
+    <!--Header-->
+    <header id="header">
+        <button id='logo'>
             <div class="tooltip">CREDITS
                 <span class="tooltiptext"></span>
               </div>
-          </button></header>
-        
+        </button>
+    </header>
+    
+    <div class="grid-container">
         <!--LIST OF COMPANIES-->
         <div id="list">
             <p>List of Companies</p>
@@ -38,7 +38,6 @@
 
         <!--COMPANY INFORMATION-->
         <div id="info">Company Information
-            <button id="speak"><img src = 'images/listen.png' id = 'ear'></button>
             <!--NEEDS A BETTER ID I DONT FUCKING KNOW-->
             <div id="infoInternal">
                 <div id="textInfo"></div>
@@ -47,7 +46,7 @@
         
         <!--STOCK DATA-->
         <div id="stock">Stock Data
-        <button class="button">View Charts</button>
+        <button class="button viewButton">View Charts</button>
        
             <div id="stockData">
                 <table id="stockTable">
@@ -78,9 +77,44 @@
     </div>
     
 
-    <main>
-
-    </main>
+    <div class="grid-container-two hide">
+        
+        
+        <div id="charts" class='hide'>
+            CHARTS
+            
+            <div class='chart' id="barChart" style="width:800px; height:400px;"></div>
+            <div class='chart' id="candleChart" style="width:600px; height:400px;"></div>
+            <div class='chart' id="lineChart" style="width:600px; height:400px;"></div>
+        </div>
+        
+        
+        
+        <div id="chartInfo" class='hide'>
+            <button id="speak"><img src = 'images/listen.png' id = 'ear'></button>
+            INFO
+            <div></div>
+            <button class="button viewButton">Close</button>
+        </div>
+        
+        
+        <div id="finance" class='hide'>
+            FINANCES
+            
+            <table id="financeTable">
+                <tr>
+                    <th>Year</th>
+                    <th>2017</th>
+                    <th>2018</th>
+                    <th>2019</th>
+                </tr>
+                <tr class="financeRows"><td>Assets</td></tr>
+                <tr class="financeRows"><td>Earnings</td></tr>
+                <tr class="financeRows"><td>Liabilities</td></tr>
+                <tr class="financeRows"><td>Revenue</td></tr>
+            </table>
+        </div>
+    </div>
 
 </body>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB9kMLcamhEVkimas5Qp7PQyl-ZEYpIPHQ"></script>

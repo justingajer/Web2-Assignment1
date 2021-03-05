@@ -1,6 +1,25 @@
-/*test*/
 body {
   font-family: Verdana, sans-serif;
+}
+
+.hide {
+    position:absolute;
+    left: -999px;
+}
+
+.grid-container-two{
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: 400px 500px;
+  grid-gap: 5px;
+  padding: 10px;
+}
+.grid-container{
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: 300px 500px 100px;
+  grid-gap: 5px;
+  padding: 10px;
 }
 
 #header{
@@ -8,29 +27,58 @@ body {
   background-size: cover;
   background-position: center;
   text-align:center;
-  grid-column: span 10;
-  grid-row: span 1;
+  height: 100px;
+    width: 100%;
 }
+
 #list {
   grid-column: span 2;
-  grid-row: span 10;
-  min-height: 0;
-  min-width: 0;
+  grid-row: span 3;
 }
 #info {
   grid-column: span 4;
-  grid-row: span 3;
+  grid-row: span 1;
 }
 #stock {
   grid-column: span 4;
-  grid-row: span 8;
+  grid-row: span 2;
 }
 #map {
   grid-column: span 4;
-  grid-row: span 6;
+  grid-row: span 2;
 }
 #calculations {
   grid-column: span 4;
+}
+
+#charts{
+    grid-column: span 6;
+    grid-row: span 2;
+}
+
+#chartInfo {
+    grid-column: span 4;
+    grid-row: span 1;
+}
+
+#finance {
+    grid-column: span 4;
+    grid-row: span 2;
+}
+
+#charts {
+    grid-column: span auto/6;
+    grid-row: span auto/3;
+}
+
+#chartInfo {
+    grid-column: span auto/4;
+    grid-row: span auto/1;
+}
+
+#financials {
+    grid-column: span auto/4;
+    grid-row: span auto/2;
 }
 
 .button{
@@ -66,16 +114,7 @@ body {
 }
 
 
-
-.grid-container{
-  display:grid;
-  grid-template-columns: repeat(10, 1fr);
-  grid-template-rows: repeat(10, 1fr);
-  grid-gap: 5px;
-  padding: 10px;
-}
-
-.grid-container > div {
+.grid-container > div, .grid-container-two > div {
   background-image: url("images/background2.jpg");
   background-size: cover;
   background-position: center;
@@ -87,7 +126,7 @@ body {
 #companyList{
     text-align: left;
     list-style: none;
-    height: 500px;
+    height: 700px;
     overflow-y: scroll;
     width: 100%;
     padding: 0;
@@ -115,7 +154,7 @@ body {
 }
 
 #stockData {
-    height: 700px;
+    height: 760px;
     overflow-y: scroll;
 }
 
@@ -131,4 +170,12 @@ body {
     width: 100%;
 }
 
+#infoInternal>img {
+    max-height: 200px;
+    max-width: 200px;
+}
 
+#financeTable {
+    width: 100%;
+    height: 100%;
+}
