@@ -192,7 +192,7 @@ document.addEventListener("DOMContentLoaded", function () {
     //credits in header (supposed to show our names and stuff and then fade away after 4 seconds
     document.querySelector('#logo').
         addEventListener('mouseover', (e) => {
-        document.querySelector(".tooltiptext").innerHTML = 'Jacob Gill, Justin Gajer. COMP 3512, Google Maps';
+        document.querySelector(".tooltiptext").innerHTML = 'Jacob Gill, Justin Gajer. COMP 3512, Google Map API, Apache Charts';
         setTimeout(function(){
         document.querySelector(".tooltiptext").innerHTML = '';
         }, 3000);
