@@ -183,10 +183,10 @@ document.addEventListener("DOMContentLoaded", function () {
     /*------------ MISC SCRIPTS (SPEAK BUTTON/MOUSEOVER EVENT)----------------*/
     // Speak button 
     document.querySelector('#speak').addEventListener('click', (e) => {
-            e.preventDefault();
-            let message = document.querySelector('#speak').value;         
-            let utterance = new SpeechSynthesisUtterance(message); 
-            window.speechSynthesis.speak(utterance);
+        let message = document.querySelector("#toSpeak").textContent;
+        const utterance = new SpeechSynthesisUtterance(message); 
+        speechSynthesis.cancel();
+        speechSynthesis.speak(utterance);
     });
 
     //credits in header (supposed to show our names and stuff and then fade away after 4 seconds
@@ -498,6 +498,8 @@ document.addEventListener("DOMContentLoaded", function () {
             initBarChart(company.financials);
         
         initCandleChart();
+        
+        initLineChart();
     }
     
     //Bar chart creation, takes in a finance object and creates based on that
@@ -588,22 +590,25 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     
     
-    //Creates the candlestick chart
+    //Creates the candlestick chart?
     function initCandleChart() {
         let myChart = echarts.init(document.querySelector('#candleChart'));
+        //Using calculation methods to grab the values needed
+        const averages = calcAverage(stockData);
+        const minMaxArray = calcMinMax(stockData);
         
         let option = {
             xAxis: {
-                data: ['Open', 'Close', 'High', 'Low']
+                data: ['Open', 'High', 'Low', 'Close']
             },
             yAxis: {},
             series: [{
                 type: 'k',
                 data: [
-                    [20, 34, 10,38],
-                    [40, 35, 30, 50],
-                    [31, 38, 33, 44],
-                    [38, 15, 5, 42]
+                    [averages[0], averages[0], minMaxArray[0][0], minMaxArray[1][0]],
+                    [averages[1], averages[1], minMaxArray[0][1], minMaxArray[1][1]],
+                    [averages[2], averages[2], minMaxArray[0][2], minMaxArray[1][2]],
+                    [averages[3], averages[3], minMaxArray[0][3], minMaxArray[1][3]]
                 ]
             }]
     
@@ -612,18 +617,32 @@ document.addEventListener("DOMContentLoaded", function () {
         myChart.setOption(option);
     }
     
+    //Creates line chart
     function initLineChart() {
         let myChart = echarts.init(document.querySelector('#lineChart'));
         
+        //Make sure the stock data is sorted by date
+        stockData.sort((a, b) => (a.date > b.date) ? 1 : -1 );
+        
+        const dates = [];
+        const closeArray = [];
+        const volumeArray = [];
+        
+        //Building the data sets so we can just plug them into the chart
+        for(let item of stockData) {
+            dates.push(item.date);
+            closeArray.push(item.close);
+            volumeArray.push(item.close);
+        }
+        
+        
         let option = {
-            title: {
-                text: '折线图堆叠'
-            },
+            title: {},
             tooltip: {
                 trigger: 'axis'
             },
             legend: {
-                data: ['邮件营销', '联盟广告', '视频广告', '直接访问', '搜索引擎']
+                data: ['Close', 'Volume']
             },
             grid: {    
                 left: '3%',     
@@ -631,49 +650,32 @@ document.addEventListener("DOMContentLoaded", function () {
                 bottom: '3%', 
                 containLabel: true
             },
-            toolbox: { 
-                feature: {     
-                    saveAsImage: {}
+            toolbox: {
+                show:true,
+                feature: {
+                    magicType: {show: true, type: ['stack', 'tiled']},
                 }
             },
             xAxis: {
                 type: 'category',
                 boundaryGap: false,
-                data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+                data: dates
             },
             yAxis: {
                 type: 'value'
             },
             series: [
                 {
-                    name: '邮件营销',
+                    name: 'Close',
                     type: 'line',
-                    stack: '总量',
-                    data: [120, 132, 101, 134, 90, 230, 210]
+                    stack: false,
+                    data: closeArray
                 },
                 {
-                    name: '联盟广告',
+                    name: 'Volume',
                     type: 'line',
-                    stack: '总量',
-                    data: [220, 182, 191, 234, 290, 330, 310]
-                },
-                {
-                    name: '视频广告',
-                    type: 'line',
-                    stack: '总量',
-                    data: [150, 232, 201, 154, 190, 330, 410]
-                },
-                {
-                    name: '直接访问',
-                    type: 'line',
-                    stack: '总量',
-                    data: [320, 332, 301, 334, 390, 330, 320]
-                },
-                {
-                    name: '搜索引擎',
-                    type: 'line',
-                    stack: '总量',
-                    data: [820, 932, 901, 934, 1290, 1330, 1320]
+                    stack: false,
+                    data: volumeArray
                 }
             ]
     
