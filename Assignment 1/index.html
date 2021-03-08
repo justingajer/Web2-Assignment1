@@ -8,14 +8,11 @@
     <script src="loadCompanyList.js"></script>
     <script src="echarts-master/dist/echarts.min.js"></script>    
 </head>
-
-
-
 <body>
     <!--Header-->
     <header id="header">
         <button id='logo'>
-            <div class="tooltip">CREDITS<br><br>
+            <div class="tooltip">Credits<br><br>
                 <span class="tooltiptext"></span>
               </div>
         </button>
@@ -24,9 +21,9 @@
     <div class="grid-container">
         <!--LIST OF COMPANIES-->
         <div id="list">
-            <p>List of Companies</p>
+            <p><h2>List of Companies</h2></p>
             <form id='filter'>
-                <legend>Filter:</legend>
+                <legend><h1>Filter:</h1></legend>
                 <input type='text' placeholder='Type to refine'>
             </form>
             
@@ -41,14 +38,13 @@
 
         <!--COMPANY INFORMATION-->
         <div id="info">
-            <!--NEEDS A BETTER ID I DONT FUCKING KNOW-->
             <div id="infoInternal">
                 <div id="textInfo"></div>
             </div>
         </div>
         
         <!--STOCK DATA-->
-        <div id="stock">Stock Data
+        <div id="stock"><h2>Stock Data</h2>
         <button class="button viewButton">View Charts</button>
        
             <div id="stockData">
@@ -80,47 +76,44 @@
     
     </div>
     
-
     <div class="grid-container-two hide">
-        
-        
         <div id="charts" class='hide'>
-            CHARTS
-            
+            <h2>Company Graphs</h2>
+            <h1>Bar</h1>
             <div class='chart' id="barChart" style="width:900px; height:400px;"></div>
+            <h1>Candle</h1>
             <div class='chart' id="candleChart" style="width:900px; height:400px;"></div>
+            <h1>Line</h1>
             <div class='chart' id="lineChart" style="width:900px; height:400px;"></div>
         </div>
-        
-        
-        
+          
         <div id="chartInfo" class='hide'>
             <button id="speak"><img src = 'images/listen.png' id = 'ear'></button>
-            INFO
+            <h1>Company Information</h1>
             <div></div>
-            <button class="button viewButton">Close</button>
+            <button class="button viewButton" id = 'back'>Go Back</button>
         </div>
         
-        
         <div id="finance" class='hide'>
-            FINANCES
-            
+            <h2>Company Finances</h2>
             <table id="financeTable">
                 <tr>
-                    <th>Year</th>
-                    <th>2017</th>
-                    <th>2018</th>
-                    <th>2019</th>
+                    <th><h1>Year</h1></th>
+                    <th><h1>2017</h1></th>
+                    <th><h1>2018</h1></th>
+                    <th><h1>2019</h1></th>
                 </tr>
+                <div id ='assets'>
                 <tr class="financeRows"><td>Assets</td></tr>
+            </div>
                 <tr class="financeRows"><td>Earnings</td></tr>
                 <tr class="financeRows"><td>Liabilities</td></tr>
                 <tr class="financeRows"><td>Revenue</td></tr>
             </table>
         </div>
     </div>
-
 </body>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB9kMLcamhEVkimas5Qp7PQyl-ZEYpIPHQ"></script>
 </html>
+
 
