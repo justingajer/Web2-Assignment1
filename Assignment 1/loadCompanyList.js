@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let stockData = [];
     let ascending = false;
     
-    fill(companyList);
+    fillCompanyList(companyList);
     
     
     /* ------------- FUNCTIONS FOR STORAGE FROM LAB4 EX11 ----------------- */
@@ -33,7 +33,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     
     // This fills the company list from the local storage
-    function fill(companies) {
+    function fillCompanyList(companies) {
+        document.querySelector('#companyList').innerHTML = '';
         for(let company of companies) {
             let listElement = document.createElement('li');
             listElement.textContent = company.name
@@ -140,6 +141,9 @@ document.addEventListener("DOMContentLoaded", function () {
         
     }
     
+    
+    /*--------- COMPANY LIST SCRIPTS -----------*/
+    
     //Click event for the company list, it will find the company then fill the info box accordingly.
     document.querySelector("#companyList").addEventListener('click', function (e) { 
         if (e.target.nodeName == "LI") {
@@ -173,12 +177,41 @@ document.addEventListener("DOMContentLoaded", function () {
             initMap(foundCompany);
             
             //Call function to fill finance data
-            if (foundCompany.finances)
+            if (foundCompany.financials) {
                 financeFill(foundCompany);
+                console.log("here");
+            }
             
         }
     });
     
+    
+    //Event for go button that filters the current company list down
+    document.querySelector('#goButton').addEventListener('click', function (e) {
+        let filterString = document.querySelector('#filter>input').value;
+        
+        let companyMatches = [];
+        companyMatches = filterCompanies(filterString);
+        
+        fillCompanyList(companyMatches);
+        
+    });
+    
+    //Event for clear button that resets the company list back to normal
+    document.querySelector('#clearButton').addEventListener('click', () => {
+        //Clear company list
+        document.querySelector('#companyList').innerHTML = '';
+        
+        //Refill with company data
+        fillCompanyList(companyList);
+        
+        document.querySelector('#filter>input').value = '';
+    });
+    
+    //Filters companies based on key provided, returns an array
+    function filterCompanies(key) {
+        return companyList.filter(company => company.name.match(key));
+    }
     
     /*------------ MISC SCRIPTS (SPEAK BUTTON/MOUSEOVER EVENT)----------------*/
     // Speak button 

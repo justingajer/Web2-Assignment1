@@ -25,11 +25,14 @@
         <!--LIST OF COMPANIES-->
         <div id="list">
             <p>List of Companies</p>
-            <p>Filter + Textbox</p>
+            <form id='filter'>
+                <legend>Filter:</legend>
+                <input type='text' placeholder='Type to refine'>
+            </form>
             
             <div>
-                <button class="button">Go</button>
-                <button class="button">Clear</button>
+                <button id='goButton' class="button">Go</button>
+                <button id='clearButton' class="button">Clear</button>
             </div>
             
             <ul id="companyList"></ul>
