@@ -151,8 +151,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const rows = document.querySelectorAll(".financeRows");
         const financeArray = [];
         
-        console.log(company);
-        
         //Saving all the financial data
         financeArray.push(company.financials.assets);
         financeArray.push(company.financials.earnings);
@@ -218,7 +216,6 @@ document.addEventListener("DOMContentLoaded", function () {
             //Call function to fill finance data
             if (foundCompany.financials) {
                 financeFill(foundCompany);
-                console.log("here");
             }
             
         }
@@ -420,7 +417,7 @@ document.addEventListener("DOMContentLoaded", function () {
         
     });
     
-    
+    //This calls for calculations and fills the min/max/average table
     function stockCalc(data) {
         const avgRow = document.querySelector("#averageCalc");
         const minRow = document.querySelector("#minCalc");
@@ -483,7 +480,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const minArr = [];
         const maxArr = [];
         const minMaxArr = [];
-
         
         // ---------- OPEN --------
         data.sort((a, b) => (parseFloat(a.open) > parseFloat(b.open)) ? 1 : -1 );
@@ -583,6 +579,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
             initLineChart();
             
+            document.querySelector("#finance").innerHTML = `<h2>Financial breakdown</h2>
+            
+                                                            <table id="financeTable"></table>`;
+            
             financeFill(company);
         }
         else {
@@ -592,7 +592,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                         <div class='chart' id="candleChart"></div>
                                         <div class='chart' id="lineChart"></div>`;
             
-            document.querySelector("#finance").innerHTML = '<h3>No financial data found for this company.</h3>'
+            document.querySelector("#finance").innerHTML = '<h3>No financial data found for this company.</h3>';
             
             initCandleChart();
 
