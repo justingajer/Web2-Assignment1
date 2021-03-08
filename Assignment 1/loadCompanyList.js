@@ -1,4 +1,3 @@
-//test
 document.addEventListener("DOMContentLoaded", function () {
     let companyURL = 'https://www.randyconnolly.com/funwebdev/3rd/api/stocks/companies.php';
     let stockURL = 'https://www.randyconnolly.com/funwebdev/3rd/api/stocks/history.php?symbol='
@@ -149,14 +148,20 @@ document.addEventListener("DOMContentLoaded", function () {
         if (e.target.nodeName == "LI") {
             let foundCompany = companyList.find(company => e.target.innerText == company.name);
             
+
+            const spinner = document.getElementById("spinner");
+            spinner.removeAttribute('hidden');
             //Fetch the stock data for future use
             fetch(stockURL + foundCompany.symbol).then( (resp) => resp.json() )
                                 .then( data => {
+                                    spinner.setAttribute('hidden', '');
                                                 //Storing the stock data for future sorting purposes
                                                 stockData = [];
                                                 stockData.push(... data);
+                                                
                                                 fillStockData(data);
                                                 stockCalc(data);
+                                                
                                                 })
                                 .catch( error => console.error(error));
             
@@ -717,6 +722,9 @@ document.addEventListener("DOMContentLoaded", function () {
         myChart.setOption(option);
     }
 });
+
+
+
 
 
 
