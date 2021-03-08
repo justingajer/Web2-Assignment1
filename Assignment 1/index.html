@@ -4,8 +4,9 @@
     <!--test-->
    <meta charset="utf-8"/>  
     <title>Assignment 1</title>  
-    <link rel="stylesheet" href="styles.css"> 
     <script src="loadCompanyList.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/dark.css">
+    <link rel="stylesheet" href="styles.css"> 
     <script src="echarts-master/dist/echarts.min.js"></script>    
 </head>
 
@@ -14,17 +15,16 @@
 <body>
     <!--Header-->
     <header id="header">
-        <button id='logo'>
-            <div class="tooltip">CREDITS<br><br>
-                <span class="tooltiptext"></span>
-              </div>
-        </button>
+        <h1 class="tooltip">COMP 3512</h1>
+        <h2 id='credits'>Credits</h2>
+        <span id='tooltiptext'></span>
+        <span id='css-used'></span>
     </header>
     
     <div class="grid-container">
         <!--LIST OF COMPANIES-->
         <div id="list">
-            <p>List of Companies</p>
+            <h2>List of Companies</h2>
             <form id='filter'>
                 <legend>Filter:</legend>
                 <input type='text' placeholder='Type to refine'>
@@ -34,47 +34,41 @@
                 <button id='goButton' class="button">Go</button>
                 <button id='clearButton' class="button">Clear</button>
             </div>
-            
+            <div class='loader hide' id='companyLoader'></div>
             <ul id="companyList"></ul>
+            
 
         </div>
 
         <!--COMPANY INFORMATION-->
         <div id="info">
-            <!--NEEDS A BETTER ID I DONT FUCKING KNOW-->
+            <h2>Company Information</h2>
             <div id="infoInternal">
                 <div id="textInfo"></div>
             </div>
         </div>
         
         <!--STOCK DATA-->
-        <div id="stock">Stock Data
-        <button class="button viewButton">View Charts</button>
-       
+        <div id="stock">
+            <h2>Stock Data</h2><button class="button viewButton">View Charts</button>
             <div id="stockData">
                 <table id="stockTable">
                     <tr id="tableHeader">
-                            <th>Date</th>
-                            <th>Open</th>
-                            <th>High</th>
-                            <th>Low</th>
-                            <th>Close</th>
-                            <th>Volume</th>
-                      </tr>
+                    </tr>
                 </table>
-                <div hidden id="spinner"></div>
+                <div class='loader hide' id='stockLoader'></div>
             </div>
         </div>
 
         <!--MAP-->
         <div id="map"></div>
 
-        <!--LAST-->
+        <!--STOCK CALCULATIONS-->
         <div id="calculations">
             <table>
-                <tr id="averageCalc"><td>Average</td></tr>
-                <tr id="minCalc"><td>Minimum</td></tr>
-                <tr id="maxCalc"><td>Maximum</td></tr>
+                <tr id="averageCalc"></tr>
+                <tr id="minCalc"></tr>
+                <tr id="maxCalc"></tr>
             </table>
         </div>
     
@@ -85,37 +79,36 @@
         
         
         <div id="charts" class='hide'>
-            CHARTS
-            
-            <div class='chart' id="barChart" style="width:900px; height:400px;"></div>
-            <div class='chart' id="candleChart" style="width:900px; height:400px;"></div>
-            <div class='chart' id="lineChart" style="width:900px; height:400px;"></div>
+            <h1>Charts:</h1>
+            <div class='chart' id="barChart"></div>
+            <div class='chart' id="candleChart"></div>
+            <div class='chart' id="lineChart"></div>
         </div>
         
         
         
         <div id="chartInfo" class='hide'>
-            <button id="speak"><img src = 'images/listen.png' id = 'ear'></button>
-            INFO
+            <h2>Company Information</h2>
+            <button id="speak">Speak</button>
             <div></div>
             <button class="button viewButton">Close</button>
         </div>
         
         
         <div id="finance" class='hide'>
-            FINANCES
+            <h2>Financial breakdown</h2>
             
             <table id="financeTable">
                 <tr>
-                    <th>Year</th>
+                    <th id="financeYearHeader">Year</th>
                     <th>2017</th>
                     <th>2018</th>
                     <th>2019</th>
                 </tr>
-                <tr class="financeRows"><td>Assets</td></tr>
-                <tr class="financeRows"><td>Earnings</td></tr>
-                <tr class="financeRows"><td>Liabilities</td></tr>
-                <tr class="financeRows"><td>Revenue</td></tr>
+                <tr class="financeRows"><td class="financeDescriptor">Assets</td></tr>
+                <tr class="financeRows"><td class="financeDescriptor">Earnings</td></tr>
+                <tr class="financeRows"><td class="financeDescriptor">Liabilities</td></tr>
+                <tr class="financeRows"><td class="financeDescriptor">Revenue</td></tr>
             </table>
         </div>
     </div>

@@ -3,13 +3,24 @@ document.addEventListener("DOMContentLoaded", function () {
     let stockURL = 'https://www.randyconnolly.com/funwebdev/3rd/api/stocks/history.php?symbol='
     
     const listContainer = document.querySelector('#companyList');
+    let companyList = [];
     
-    let companyList = retrieveStorage();
+    //Turn on the loading animation
+    document.querySelector("#companyLoader").classList.toggle('hide');
+    
+    companyList = retrieveStorage();
     let stockData = [];
     let ascending = false;
     
-    fillCompanyList(companyList);
-    
+    if(companyList) {
+        fillCompanyList(companyList);
+        document.querySelector("#companyLoader").classList.toggle('hide');
+    }
+    else {
+        companyList = [];
+        fetchCompanyList();
+    }
+        
     
     /* ------------- FUNCTIONS FOR STORAGE FROM LAB4 EX11 ----------------- */
     
@@ -18,12 +29,21 @@ document.addEventListener("DOMContentLoaded", function () {
         localStorage.setItem('companies', JSON.stringify(companyList));
     }
     
-    //Parses local storage or fetches company data from API
+    //Parses local storage for company list
     function retrieveStorage() {
-        return JSON.parse(localStorage.getItem('companies')) || 
-               fetch(companyURL).then( (resp) => resp.json() )
-                                .then( data => localStorage.setItem('companies', JSON.stringify(data)))
-                                .catch( error => console.error(error));
+        return JSON.parse(localStorage.getItem('companies'));
+    }
+    
+    //If company list must be fetched this will grab it, set local storage, set global variable and populate list.
+    function fetchCompanyList() {
+        fetch(companyURL).then( (resp) => resp.json() )
+                         .then( data => {
+                                         localStorage.setItem('companies', JSON.stringify(data));
+                                         companyList.push(... data);
+                                         fillCompanyList(data);
+                                         document.querySelector("#companyLoader").classList.toggle('hide');
+                                        })
+                         .catch( error => console.error(error));
     }
     
     //removes collection from storage
@@ -31,7 +51,7 @@ document.addEventListener("DOMContentLoaded", function () {
         localStorage.removeItem('companies');
     }
     
-    // This fills the company list from the local storage
+    // This fills the company list from the passed company list
     function fillCompanyList(companies) {
         document.querySelector('#companyList').innerHTML = '';
         for(let company of companies) {
@@ -54,20 +74,26 @@ document.addEventListener("DOMContentLoaded", function () {
     //This creates an array of text elements to fill the company info box with.
     function informationFill(company) {
         const infoList = document.querySelector('#infoInternal');
+        const companyInformation = [
+                                company.symbol, company.name, company.sector, company.subindustry, company.address, company.exchange, company.description
+                             ];
         const elementArray = [];
 
-        elementArray.push(createTextElement(company.symbol));
-        elementArray.push(createTextElement(company.name));
-        elementArray.push(createTextElement(company.sector));
-        elementArray.push(createTextElement(company.subindustry));
-        elementArray.push(createTextElement(company.address));
-        elementArray.push(createTextElement(company.exchange));
-        elementArray.push(createTextElement(company.description));
+        elementArray.push(createTextElement("Symbol: "));
+        elementArray.push(createTextElement("Name: "));
+        elementArray.push(createTextElement("Sector: "));
+        elementArray.push(createTextElement("Sub-industry: "));
+        elementArray.push(createTextElement("Address: "));
+        elementArray.push(createTextElement("Exchange: "));
+        elementArray.push(createTextElement("Description: "));
         
-
+        for(let i = 0; i < elementArray.length; i++) {
+            elementArray[i].textContent += companyInformation[i]
+        }
         
         const websiteElement = document.createElement('a');
-        websiteElement.textContent = company.website
+        const webTextElement = document.createElement('p');
+        websiteElement.textContent = 'Company Website';
         websiteElement.setAttribute('href', company.website);
         elementArray.push(websiteElement);
         
@@ -80,39 +106,46 @@ document.addEventListener("DOMContentLoaded", function () {
     function chartInformationFill(company) {
         const secondInfoList = document.querySelector("#chartInfo>div");
         secondInfoList.innerHTML = '';
-        const infoArray = [];
+        const elementArray = [];
         
         //parse the description to append the ID speak so it can be spoken
-        let speakElement = createTextElement(company.description);
+        let speakElement = createTextElement("Description: ");
         speakElement.setAttribute('id', 'toSpeak');
+        speakElement.textContent += company.description;
         
         //Assigning a value so we can use it later
-        let nameElement = createTextElement(company.name);
+        let nameElement = createTextElement("Name: ");
         nameElement.setAttribute('id', 'companyName');
+        nameElement.textContent += company.name;
         
-        infoArray.push(nameElement);
-        infoArray.push(createTextElement(company.symbol));
-        infoArray.push(speakElement);
+        let symbolElement = createTextElement("Symbol: ");
+        symbolElement.textContent += company.symbol;
         
-        for(let element of infoArray) {
+        elementArray.push(nameElement);
+        elementArray.push(symbolElement);
+        elementArray.push(speakElement);
+        
+        for(let element of elementArray) {
             secondInfoList.appendChild(element);
         }
         
     }
     
+    /*----- FINANCE TABLE FILL -------*/
+    
     //Fills out finance table of chart view
     function financeFill(company) {
         const financeTable = document.querySelector("#financeTable");
         financeTable.innerHTML = `<tr>
-                                    <th>Year</th>
+                                    <th id="financeYearHeader">Year</th>
                                     <th>2017</th>
                                     <th>2018</th>
                                     <th>2019</th>
                                   </tr>
-                                  <tr class="financeRows"><td>Assets</td></tr>
-                                  <tr class="financeRows"><td>Earnings</td></tr>
-                                  <tr class="financeRows"><td>Liabilities</td></tr>
-                                  <tr class="financeRows"><td>Revenue</td></tr>`
+                                  <tr class="financeRows"><td class="financeDescriptor">Assets</td></tr>
+                                  <tr class="financeRows"><td class="financeDescriptor">Earnings</td></tr>
+                                  <tr class="financeRows"><td class="financeDescriptor">Liabilities</td></tr>
+                                  <tr class="financeRows"><td class="financeDescriptor">Revenue</td></tr>`
         
         
         const rows = document.querySelectorAll(".financeRows");
@@ -132,7 +165,7 @@ document.addEventListener("DOMContentLoaded", function () {
             for ( let j = financeArray[i].length-1; j > -1; j--) {
                 
                 const cell = document.createElement('td');
-                cell.textContent = financeArray[i][j];
+                cell.textContent = currency(parseInt(financeArray[i][j]));
                 rows[i].appendChild(cell);
                 
             }
@@ -149,19 +182,20 @@ document.addEventListener("DOMContentLoaded", function () {
             let foundCompany = companyList.find(company => e.target.innerText == company.name);
             
 
-            const spinner = document.getElementById("spinner");
-            spinner.removeAttribute('hidden');
+            
+
+            document.querySelector('#stockLoader').classList.toggle('hide');
             //Fetch the stock data for future use
             fetch(stockURL + foundCompany.symbol).then( (resp) => resp.json() )
                                 .then( data => {
-                                    spinner.setAttribute('hidden', '');
                                                 //Storing the stock data for future sorting purposes
                                                 stockData = [];
                                                 stockData.push(... data);
                                                 
                                                 fillStockData(data);
                                                 stockCalc(data);
-                                                
+                
+                                                document.querySelector('#stockLoader').classList.toggle('hide');
                                                 })
                                 .catch( error => console.error(error));
             
@@ -221,19 +255,26 @@ document.addEventListener("DOMContentLoaded", function () {
     /*------------ MISC SCRIPTS (SPEAK BUTTON/MOUSEOVER EVENT)----------------*/
     // Speak button 
     document.querySelector('#speak').addEventListener('click', (e) => {
-        let message = document.querySelector("#toSpeak").textContent;
+        let message = document.querySelector("#toSpeak").textContent.substring(12,);
         const utterance = new SpeechSynthesisUtterance(message); 
         speechSynthesis.cancel();
         speechSynthesis.speak(utterance);
     });
 
     //credits in header (supposed to show our names and stuff and then fade away after 4 seconds
-    document.querySelector('#logo').
-        addEventListener('mouseover', (e) => {
-        document.querySelector(".tooltiptext").innerHTML = 'Jacob Gill, Justin Gajer. COMP 3512, Google Map API, Apache Charts';
+    document.querySelector('#credits').addEventListener('mouseover', () => {
+        
+        document.querySelector("#tooltiptext").innerHTML = 'Jacob Gill, Justin Gajer. COMP 3512. Google Map API, Apache Charts. COMP 3512. <br>';
+        
+        document.querySelector("#css-used").innerHTML = 'CSS Used: Water.css (watercss.netlify.app), Csswand.dev';
+        
+        document.querySelector("#credits").innerHTML = '';
+        
         setTimeout(function(){
-        document.querySelector(".tooltiptext").innerHTML = '';
-        }, 3000);
+            document.querySelector("#tooltiptext").innerHTML = '';
+            document.querySelector("#credits").innerHTML = 'Credits';
+            document.querySelector("#css-used").innerHTML = '';
+        }, 5000);
     });
     
     /*--------------- MAP API FUNCTION ----------------------------*/
@@ -278,10 +319,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
             
             date.textContent = row.date;
-            open.textContent = parseFloat(row.open).toFixed(2);
-            close.textContent = parseFloat(row.close).toFixed(2);
-            high.textContent = parseFloat(row.high).toFixed(2);
-            low.textContent = parseFloat(row.low).toFixed(2);
+            open.textContent = currency(parseFloat(row.open).toFixed(2));
+            close.textContent = currency(parseFloat(row.close).toFixed(2));
+            high.textContent = currency(parseFloat(row.high).toFixed(2));
+            low.textContent = currency(parseFloat(row.low).toFixed(2));
             volume.textContent = row.volume;
             
             tableRow.appendChild(date);
@@ -379,6 +420,7 @@ document.addEventListener("DOMContentLoaded", function () {
         
     });
     
+    
     function stockCalc(data) {
         const avgRow = document.querySelector("#averageCalc");
         const minRow = document.querySelector("#minCalc");
@@ -393,13 +435,13 @@ document.addEventListener("DOMContentLoaded", function () {
         
         for (let avrg of avgArray ) {
             let cell = document.createElement('td');
-            cell.textContent = parseFloat(avrg).toFixed(2);
+            cell.textContent = currency(parseFloat(avrg).toFixed(2));
             avgRow.appendChild(cell);
         }
         
         for (let minNum of minMaxArray[0]) {
             let cell = document.createElement('td');
-            cell.textContent = minNum;
+            cell.textContent = currency(minNum);
             minRow.appendChild(cell);
         }
         
@@ -509,17 +551,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 //If closing the view, remove current charts.
                 if ( e.target.innerText.toLowerCase() == 'close') {
                     const charts = document.querySelector('#charts');
-                    charts.innerHTML = `CHARTS
+                    charts.innerHTML = `<h1>Charts:</h1>
             
-                                        <div class='chart' id="barChart" style="width:800px; height:400px;"></div>
-                                        <div class='chart' id="candleChart" style="width:600px; height:400px;"></div>
-                                        <div class='chart' id="lineChart" style="width:600px; height:400px;"></div>`
+                                        <div class='chart' id="barChart"></div>
+                                        <div class='chart' id="candleChart"></div>
+                                        <div class='chart' id="lineChart"></div>`
+                    
+                    document.querySelector("#financeTable").innerHTML = '';
                     
                 }
                 else {
                     //Check to see if they picked a company, if they do send it off to be made into charts
                     if (document.querySelector('#companyName')) {
-                        let companyToChart = companyList.find(company => document.querySelector('#companyName').textContent == company.name);
+                        let companyToChart = companyList.find(company => document.querySelector('#companyName').textContent.substring(6,) == company.name);
                         initCharts(companyToChart);
                     }
                 }
@@ -532,17 +576,33 @@ document.addEventListener("DOMContentLoaded", function () {
     /*--------- CHART STUFF ----------*/
     // Takes in a company and preps charts to be made
     function initCharts(company) {
-        if (company.financials)
+        if (company.financials) {
             initBarChart(company.financials);
         
-        initCandleChart();
-        
-        initLineChart();
+            initCandleChart();
+
+            initLineChart();
+            
+            financeFill(company);
+        }
+        else {
+            const charts = document.querySelector('#charts');
+                    charts.innerHTML = `<h1>Charts:</h1>
+            
+                                        <div class='chart' id="candleChart"></div>
+                                        <div class='chart' id="lineChart"></div>`;
+            
+            document.querySelector("#finance").innerHTML = '<h3>No financial data found for this company.</h3>'
+            
+            initCandleChart();
+
+            initLineChart();
+        }
     }
     
     //Bar chart creation, takes in a finance object and creates based on that
     function initBarChart(finances) {
-        let myChart = echarts.init(document.querySelector('#barChart'));
+        let myChart = echarts.init(document.querySelector('#barChart'), 'dark');
 
         let labelOption = {
             show: true,
@@ -630,7 +690,7 @@ document.addEventListener("DOMContentLoaded", function () {
     
     //Creates the candlestick chart?
     function initCandleChart() {
-        let myChart = echarts.init(document.querySelector('#candleChart'));
+        let myChart = echarts.init(document.querySelector('#candleChart'), 'dark');
         //Using calculation methods to grab the values needed
         const averages = calcAverage(stockData);
         const minMaxArray = calcMinMax(stockData);
@@ -657,7 +717,7 @@ document.addEventListener("DOMContentLoaded", function () {
     
     //Creates line chart
     function initLineChart() {
-        let myChart = echarts.init(document.querySelector('#lineChart'));
+        let myChart = echarts.init(document.querySelector('#lineChart'), 'dark');
         
         //Make sure the stock data is sorted by date
         stockData.sort((a, b) => (a.date > b.date) ? 1 : -1 );
@@ -720,6 +780,11 @@ document.addEventListener("DOMContentLoaded", function () {
         };
         
         myChart.setOption(option);
+    }
+    
+    /*-- CURRENCY FORMATTING FUNCTION FROM LAB 2 TYK 6*/
+    const currency = function(num) {
+        return new Intl.NumberFormat('en-us', {style: 'currency', currency: 'USD'}).format(num);
     }
 });
 
