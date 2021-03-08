@@ -186,12 +186,17 @@ document.addEventListener("DOMContentLoaded", function () {
             //Fetch the stock data for future use
             fetch(stockURL + foundCompany.symbol).then( (resp) => resp.json() )
                                 .then( data => {
-                                                //Storing the stock data for future sorting purposes
-                                                stockData = [];
-                                                stockData.push(... data);
-                                                
-                                                fillStockData(data);
-                                                stockCalc(data);
+                                                if (data.length > 0) {
+                                                    //Storing the stock data for future sorting purposes
+                                                    stockData = [];
+                                                    stockData.push(... data);
+                                                    fillStockData(data);
+                                                    stockCalc(data);
+                                                }
+                                                else {
+                                                    noStockData();
+                                                    stockData = [];
+                                                }
                 
                                                 document.querySelector('#stockLoader').classList.toggle('hide');
                                                 })
@@ -221,16 +226,14 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
     
-    
-    //Event for go button that filters the current company list down
-    document.querySelector('#goButton').addEventListener('click', function (e) {
-        let filterString = document.querySelector('#filter>input').value;
+    //Event for filter box
+    document.querySelector("#filterBox").addEventListener('change', function (e) {
+        let filterString = document.querySelector('#filterBox').value.toUpperCase();
         
         let companyMatches = [];
         companyMatches = filterCompanies(filterString);
         
         fillCompanyList(companyMatches);
-        
     });
     
     //Event for clear button that resets the company list back to normal
@@ -241,12 +244,12 @@ document.addEventListener("DOMContentLoaded", function () {
         //Refill with company data
         fillCompanyList(companyList);
         
-        document.querySelector('#filter>input').value = '';
+        document.querySelector('#filterBox').value = '';
     });
     
     //Filters companies based on key provided, returns an array
     function filterCompanies(key) {
-        return companyList.filter(company => company.name.match(key));
+        return companyList.filter(company => company.symbol.match(key));
     }
     
     /*------------ MISC SCRIPTS (SPEAK BUTTON/MOUSEOVER EVENT)----------------*/
@@ -281,7 +284,7 @@ document.addEventListener("DOMContentLoaded", function () {
         
         map = new google.maps.Map(document.querySelector("#map"), {
             center: location,
-            zoom: 6
+            zoom: 12
         });
 
         // Add marker on location
@@ -304,6 +307,9 @@ document.addEventListener("DOMContentLoaded", function () {
                             <th>Close</th>
                             <th>Volume</th>
                           </tr>`; 
+        
+        if(!document.querySelector('#stockMissingMessage').classList.contains('hide'))
+            document.querySelector('#stockMissingMessage').classList.toggle('hide');
         
         for( let row of data) {
             let tableRow = document.createElement('tr');
@@ -333,6 +339,15 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
     
+    //If no stock data is found we run this to clear charts and provide a message.
+    function noStockData() {
+        document.querySelector("#stockMissingMessage").classList.toggle('hide');
+        document.querySelector("#stockTable").innerHTML = "<tr id='tableHeader'></tr>"
+        document.querySelector("#charts").innerHTML = `<h1>Charts:</h1>
+                                                       <div class='chart' id="barChart"></div>
+                                                       <div class='chart' id="candleChart"></div>
+                                                       <div class='chart' id="lineChart"></div>`;
+    }
     
     //This checks to see what the user clicked then sorts the current stock data array accordingly
     document.querySelector('#stockTable').addEventListener('click', function (e) { 
@@ -523,8 +538,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return minMaxArr;
         
     }
-
-
+    
     /*----------- VIEW CHARTS AND WHATNOT ------------*/
     //Function that selects both containers individually and their elements and hides / unhides them.
     document.querySelectorAll('.viewButton').forEach(item => {
@@ -553,14 +567,17 @@ document.addEventListener("DOMContentLoaded", function () {
                                         <div class='chart' id="candleChart"></div>
                                         <div class='chart' id="lineChart"></div>`
                     
-                    document.querySelector("#financeTable").innerHTML = '';
+                    if(document.querySelector("#financeTable"))
+                        document.querySelector("#financeTable").innerHTML = '';
                     
                 }
                 else {
                     //Check to see if they picked a company, if they do send it off to be made into charts
                     if (document.querySelector('#companyName')) {
                         let companyToChart = companyList.find(company => document.querySelector('#companyName').textContent.substring(6,) == company.name);
-                        initCharts(companyToChart);
+                        
+                        if(stockData.length > 0)
+                            initCharts(companyToChart);
                     }
                 }
                 

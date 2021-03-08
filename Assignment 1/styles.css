@@ -1,3 +1,5 @@
+/* --- INITIAL SETUP ----*/
+/*Overwriting water css media stuff*/
 body {
     max-width: none;
 }
@@ -11,7 +13,6 @@ div, header {
     border-radius: 10px;
 }
 
-
 header h1 {
     padding-top: 10px;
     text-align: center;
@@ -19,7 +20,7 @@ header h1 {
 
 /*---- CREDIT TO CSSWAND CSSWAND.DEV -------*/
 
- button {
+button {
   color: #E2E2E2;
   background-color: #292D3E;
   border: 1px solid #E2E2E2;
@@ -35,6 +36,7 @@ header h1 {
   background-position: center;
   transition: background 0.8s;
 }
+
 button:hover{
   background: #E2E2E2 radial-gradient(circle, transparent 1%, #47a7f5 1%)
    center/15000%;
@@ -83,10 +85,11 @@ button:active{
   grid-gap: 20px;
   padding: 10px;
 }
+
 .grid-container{
   display: grid;
   grid-template-columns: repeat(10, 1fr);
-  grid-template-rows: 400px 500px 150px;
+  grid-template-rows: 600px 200px 150px;
   grid-gap: 10px;
   padding: 10px;
 }
@@ -102,18 +105,22 @@ button:active{
   grid-column: span 2;
   grid-row: span 3;
 }
+
 #info {
   grid-column: span 4;
   grid-row: span 1;
 }
+
 #stock {
   grid-column: span 4;
   grid-row: span 2;
 }
+
 #map {
   grid-column: span 4;
   grid-row: span 2;
 }
+
 #calculations {
   grid-column: span 4;
 }
@@ -153,6 +160,7 @@ body {
     background-color: #0f3460;
     color: white;
 }
+
 .grid-container > div, .grid-container-two > div {
     padding: 20px;
     font-size: 20px;
@@ -163,10 +171,31 @@ header {
     background-color: #1a1a2e;
 }
 
+#filterBox {
+    background-color: #16213e;
+    border-color: #0f3460;
+}
+
+#tableHeader th {
+    position: sticky;
+    top: 0;
+    background-color: #1a1a2e;
+}
+
+.chart {
+    background-color: #16213e;
+}
+
+::placeholder {
+    color: white;
+}
+
+/*--- SETTING OVERFLOW PROPERTIES AND SIZING OF INTERNALS ---*/
+
 #companyList{
     text-align: left;
     list-style: none;
-    height: 800px;
+    height: 750px;
     overflow-y: scroll;
     width: 100%;
     padding: 0;
@@ -176,27 +205,16 @@ header {
     overflow-y: scroll;
 }
 
-#filter>input {
-    background-color: #16213e;
-    border-color: #0f3460;
-}
-
-::placeholder {
-    color: white;
+#info{
+  overflow-y: scroll;
 }
 
 #companyList>li:hover {
     cursor: pointer;
 }
 
-.tooltiptext {
-  visibility: none;
-  font-size: larger;
-}
-
-
 #stockData {
-    height: 760px;
+    height: 660px;
     overflow-y: scroll;
 }
 
@@ -213,8 +231,8 @@ header {
 }
 
 #infoInternal>img {
-    height: 100px;
-    max-width: 500px;
+    height: 70px;
+    max-width: 400px;
     background-color: white;
     border-radius: 20px;
     padding: 10px;
@@ -224,12 +242,11 @@ header {
     width: 100%;
     height: 100%;
 }
-#info{
-  overflow-y: scroll;
-}
+
+/*--- TEXT SIZING AND POSITION STUFF ---*/
 
 div > #infoInternal{
-  font-size: 20px;
+  font-size: 16px;
 }
 
 th {
@@ -272,10 +289,8 @@ td {
     padding-right: 5px;
 }
 
-#tableHeader th {
-    position: sticky;
-    top: 0;
-    background-color: #1a1a2e;
+#filterBox {
+    float: left;
 }
 
 /*------ CHART SIZING -----*/
@@ -292,8 +307,4 @@ td {
 #barChart {
     width: 100%;
     height: 400px;
-}
-
-.chart {
-    background-color: #16213e;
 }

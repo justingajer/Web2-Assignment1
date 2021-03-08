@@ -25,14 +25,16 @@
         <!--LIST OF COMPANIES-->
         <div id="list">
             <h2>List of Companies</h2>
-            <form id='filter'>
+            <div id='filter'>
                 <legend>Filter:</legend>
-                <input type='text' placeholder='Type to refine'>
-            </form>
+                <div>
+                    <input id="filterBox" type='text' placeholder='Type to refine by symbol'>
+                    <button id='clearButton' class="button">Clear</button>
+                </div>
+            </div>
             
             <div>
-                <button id='goButton' class="button">Go</button>
-                <button id='clearButton' class="button">Clear</button>
+                
             </div>
             <div class='loader hide' id='companyLoader'></div>
             <ul id="companyList"></ul>
@@ -56,6 +58,7 @@
                     <tr id="tableHeader">
                     </tr>
                 </table>
+                <h2 id="stockMissingMessage" class="hide">No stock data found</h2>
                 <div class='loader hide' id='stockLoader'></div>
             </div>
         </div>
